@@ -30,7 +30,6 @@ RUN yarn global add \
     gatsby \
     next \
     gulp \
-    @aws-amplify/cli \
     @storybook/cli \
     @keystone-6/core
 
