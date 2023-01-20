@@ -1,0 +1,34 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		// Syntax stuff
+		"dbaeumer.vscode-eslint", 
+		"esbenp.prettier-vscode",
+		"mikestead.dotenv",
+		"EditorConfig.EditorConfig",
+		"CoenraadS.bracket-pair-colorizer",
+		"styled-components.vscode-styled-components",
+		// Themes
+		"dracula-theme.theme-dracula",
+		"sdras.night-owl",
+		// Code
+		"abusaidm.html-snippets",
+		"ecmel.vscode-html-css",
+		"dsznajder.es7-react-js-snippets",
+		"GraphQL.vscode-graphql",
+		"golang.Go",
+		"rust-lang.rust",
+		// Config
+		"hashicorp.terraform",
+		"redhat.vscode-yaml",
+		// AI
+		"TabNine.tabnine-vscode"
+	],
+	// List of extensions recommended by Code OSS that should not be recommended for users of this workspace.
+	"unwantedRecommendations": [
+		
+	]
+}
