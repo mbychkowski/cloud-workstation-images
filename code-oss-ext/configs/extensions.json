@@ -5,7 +5,7 @@
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
 		// Syntax stuff
-		"dbaeumer.vscode-eslint", 
+		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
 		"mikestead.dotenv",
 		"EditorConfig.EditorConfig",
@@ -29,6 +29,6 @@
 	],
 	// List of extensions recommended by Code OSS that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [
-		
+
 	]
 }

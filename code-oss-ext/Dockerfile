@@ -15,7 +15,9 @@ RUN apt-get update && \
     ca-certificates \
     gnupg \
     lsb-release \
-    software-properties-common
+    software-properties-common \
+    build-essential \
+    git-lfs
 
 # --------------
 # NPM: Packages
@@ -30,6 +32,8 @@ RUN yarn global add \
     gatsby \
     next \
     gulp \
+    mocha \
+    @aws-amplify/cli \
     @storybook/cli \
     @keystone-6/core
 
@@ -85,5 +89,5 @@ RUN apt clean all
 # --------------
 RUN mkdir /tmp/.codeoss-configs
 COPY ./configs /tmp/.codeoss-configs/
-COPY ./scripts/300_configure-ws-settings.sh/etc/workstation-startup.d
+COPY ./scripts/300_configure-ws-settings.sh /etc/workstation-startup.d
 RUN chmod 755 /etc/workstation-startup.d/300_configure-ws-settings.sh
