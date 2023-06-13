@@ -1,38 +1,33 @@
 {
-	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
-	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
-
-	// List of extensions which should be recommended for users of this workspace.
-	"recommendations": [
-		// Syntax stuff
-		"EditorConfig.EditorConfig",
-		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
-		"aaron-bond.better-comments",
-		"vincaslt.highlight-matching-tag",
-		"naumovs.color-highlight",
-		"anseki.vscode-color",
-		"eamodio.gitlens",
-		// JS support
-		"dsznajder.es7-react-js-snippets",
-		"planbcoding.vscode-react-refactor",
-		"styled-components.vscode-styled-components",
-		"Prisma.prisma",
-		// Themes
-		"dracula-theme.theme-dracula",
-		"sdras.night-owl",
-		// Code
-		"GraphQL.vscode-graphql",
-		"golang.Go",
-		"rust-lang.rust",
-		// Config
-		"hashicorp.terraform",
-		"redhat.vscode-yaml",
-		// AI
-		"TabNine.tabnine-vscode"
-	],
-	// List of extensions recommended by Code OSS that should not be recommended for users of this workspace.
-	"unwantedRecommendations": [
-
-	]
+  // See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+  // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+  // List of extensions which should be recommended for users of this workspace.
+  "recommendations": [
+    // Syntax stuff
+    "EditorConfig.EditorConfig",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "aaron-bond.better-comments",
+    "vincaslt.highlight-matching-tag",
+    "naumovs.color-highlight",
+    "anseki.vscode-color",
+    "eamodio.gitlens",
+    // JS support
+    "dsznajder.es7-react-js-snippets",
+    "planbcoding.vscode-react-refactor",
+    "styled-components.vscode-styled-components",
+    "Prisma.prisma",
+    // Themes
+    "dracula-theme.theme-dracula",
+    "sdras.night-owl",
+    // Code
+    "GraphQL.vscode-graphql",
+    "golang.Go",
+    "rust-lang.rust",
+    // Config
+    "hashicorp.terraform",
+    "redhat.vscode-yaml",
+  ],
+  // List of extensions recommended by Code OSS that should not be recommended for users of this workspace.
+  "unwantedRecommendations": []
 }
