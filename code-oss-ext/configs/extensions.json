@@ -5,19 +5,23 @@
 	// List of extensions which should be recommended for users of this workspace.
 	"recommendations": [
 		// Syntax stuff
+		"EditorConfig.EditorConfig",
 		"dbaeumer.vscode-eslint",
 		"esbenp.prettier-vscode",
-		"mikestead.dotenv",
-		"EditorConfig.EditorConfig",
-		"CoenraadS.bracket-pair-colorizer",
+		"aaron-bond.better-comments",
+		"vincaslt.highlight-matching-tag",
+		"naumovs.color-highlight",
+		"anseki.vscode-color",
+		"eamodio.gitlens",
+		// JS support
+		"dsznajder.es7-react-js-snippets",
+		"planbcoding.vscode-react-refactor",
 		"styled-components.vscode-styled-components",
+		"Prisma.prisma",
 		// Themes
 		"dracula-theme.theme-dracula",
 		"sdras.night-owl",
 		// Code
-		"abusaidm.html-snippets",
-		"ecmel.vscode-html-css",
-		"dsznajder.es7-react-js-snippets",
 		"GraphQL.vscode-graphql",
 		"golang.Go",
 		"rust-lang.rust",
