@@ -72,9 +72,6 @@ RUN wget https://open-vsx.org/api/sdras/night-owl/2.0.1/file/sdras.night-owl-2.0
 RUN wget https://open-vsx.org/api/redhat/vscode-yaml/1.11.0/file/redhat.vscode-yaml-1.11.0.vsix && \
     unzip redhat.vscode-yaml-1.11.0.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/yaml
-RUN wget https://open-vsx.org/api/TabNine/tabnine-vscode/3.6.36/file/TabNine.tabnine-vscode-3.6.36.vsix && \
-    unzip TabNine.tabnine-vscode-3.6.36.vsix "extension/*" && \
-    mv extension /opt/code-oss/extensions/tabnine
 RUN wget https://open-vsx.org/api/golang/Go/0.37.0/file/golang.go-0.37.0.vsix && \
     unzip golang.go-0.37.0.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/golang
