@@ -35,10 +35,6 @@
   "workbench.colorCustomizations": {
     "editor.lineHighlightBackground": "#223851"
   },
-  // syntax highlighting
-  "files.associations": {
-    ".env*": "makefile"
-  },
   "files.exclude": {
     "**/.cache": true,
     "**/.DS_Store": true,
@@ -48,26 +44,6 @@
     "**/.svn": true,
     "**/CVS": true,
     "**/dist": false
-  },
-  // prettier
-  "prettier.singleQuote": true,
-  "prettier.printWidth": 70,
-  "editor.formatOnSave": false,
-  "[javascript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // eslint
   "editor.codeActionsOnSave": {
@@ -81,18 +57,5 @@
   ],
   "javascript.validate.enable": false,
   "javascript.updateImportsOnFileMove.enabled": "never",
-  "typescript.updateImportsOnFileMove.enabled": "never",
-  // auto generated
-  "explorer.confirmDragAndDrop": false,
-  "js/ts.implicitProjectConfig.checkJs": true,
-  "editor.formatOnPaste": true,
-  "editor.formatOnType": true,
-  "extensions.ignoreRecommendations": true,
-  "html.format.enable": true,
-  "html.format.preserveNewLines": true,
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.inlineSuggest.enabled": true,
-  "editor.suggestSelection": "first",
+  "typescript.updateImportsOnFileMove.enabled": "never"
 }

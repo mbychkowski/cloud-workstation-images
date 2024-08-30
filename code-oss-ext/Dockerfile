@@ -3,7 +3,27 @@ FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/code-oss:la
 # --------------
 # # Versions
 # --------------
-ENV NODE_VER=18.x
+ENV NODE_VER=20.x
+
+# --------------
+# PKG: Terraform
+# --------------
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor | \
+    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
+
+# --------------
+# PKG: GitHub CLI
+# --------------
+RUN wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+    sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null && \
+    sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+    https://cli.github.com/packages stable main" | \
+    sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
 
 # --------------
 # Update: System Packages, Dependencies
@@ -12,69 +32,63 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt install -y \
     apt-transport-https \
+    build-essential \
     ca-certificates \
+    gh \
+    git-lfs \
     gnupg \
     lsb-release \
     software-properties-common \
-    build-essential \
-    git-lfs
+    terraform
+
 
 # --------------
 # NPM: Packages
 # --------------
-RUN curl -sL https://deb.nodesource.com/setup_${NODE_VER} -o /tmp/nodesource_setup.sh && \
-    bash /tmp/nodesource_setup.sh && \
-    apt install -y nodejs
-
-RUN yarn global add \
-    webpack-cli \
-    create-react-app \
-    gatsby \
-    next \
-    gulp \
-    mocha \
-    @aws-amplify/cli \
-    @storybook/cli \
-    @keystone-6/core
-
-# --------------
-# PKG: Github CLI
-# --------------
-RUN type -p curl >/dev/null || apt install curl -y && \
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
-    chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null && \
-    apt update && \
-    apt install gh -y
-
-# --------------
-# PKG: Terraform
-# --------------
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - && \
-    apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
-    apt-get update && \
-    apt install -y terraform
-
-# --------------
-# PKG: Helm
-# --------------
-RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+RUN npm install -g \
+    next 
 
 # --------------
 # EXTENSIONS
 # --------------
-RUN wget https://open-vsx.org/api/dracula-theme/theme-dracula/2.24.2/file/dracula-theme.theme-dracula-2.24.2.vsix && \
-    unzip dracula-theme.theme-dracula-2.24.2.vsix "extension/*" && \
+# Themes extension(s)
+RUN wget -O theme-dracula.vsix $(curl -q https://open-vsx.org/api/dracula-theme/theme-dracula | jq -r '.files.download') && \
+    unzip theme-dracula.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/theme-dracula
-RUN wget https://open-vsx.org/api/sdras/night-owl/2.0.1/file/sdras.night-owl-2.0.1.vsix && \
-    unzip sdras.night-owl-2.0.1.vsix "extension/*" && \
-    mv extension /opt/code-oss/extensions/theme-night-owl
-RUN wget https://open-vsx.org/api/redhat/vscode-yaml/1.11.0/file/redhat.vscode-yaml-1.11.0.vsix && \
-    unzip redhat.vscode-yaml-1.11.0.vsix "extension/*" && \
-    mv extension /opt/code-oss/extensions/yaml
-RUN wget https://open-vsx.org/api/golang/Go/0.37.0/file/golang.go-0.37.0.vsix && \
-    unzip golang.go-0.37.0.vsix "extension/*" && \
-    mv extension /opt/code-oss/extensions/golang
+RUN wget -O night-owl.vsix $(curl -q https://open-vsx.org/api/sdras/night-owl | jq -r '.files.download') && \
+    unzip night-owl.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/night-owl
+# VSCode icons
+RUN wget -O material-icon-theme.vsix $(curl -q https://open-vsx.org/api/PKief/material-icon-theme | jq -r '.files.download') && \
+    unzip material-icon-theme.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/material-icon-theme
+RUN wget -O vscode-icons.vsix $(curl -q https://open-vsx.org/api/vscode-icons-team/vscode-icons | jq -r '.files.download') \
+    && unzip vscode-icons.vsix "extension/*" \
+    && mv extension /opt/code-oss/extensions/vscode-icons
+# Terraform extension    
+RUN wget -O terraform.vsix $(curl -q https://open-vsx.org/api/hashicorp/terraform/linux-x64 | jq -r '.files.download') && \
+    unzip terraform.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/terraform
+# Go extension
+RUN wget -O go.vsix $(curl -q https://open-vsx.org/api/golang/go | jq -r '.files.download') && \
+    unzip go.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/go
+# Python extension
+RUN wget -O python.vsix $(curl -q https://open-vsx.org/api/ms-python/python | jq -r '.files.download') && \
+    unzip python.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/python
+# TailwindCSS extension
+RUN wget -O vscode-tailwindcss.vsix $(curl -q https://open-vsx.org/api/bradlc/vscode-tailwindcss | jq -r '.files.download') && \
+    unzip vscode-tailwindcss.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/vscode-tailwindcss
+# VSCode ESLint extension
+RUN wget -O vscode-eslint.vsix $(curl -q https://open-vsx.org/api/dbaeumer/vscode-eslint | jq -r '.files.download') && \
+    unzip vscode-eslint.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/vscode-eslint
+# GraphQL syntax highlighting
+RUN wget -O vscode-graphql-syntax.vsix $(curl -q https://open-vsx.org/api/GraphQL/vscode-graphql-syntax | jq -r '.files.download') && \
+    unzip vscode-graphql-syntax.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/vscode-graphql-syntax
 
 # --------------
 # APT: Cleanup

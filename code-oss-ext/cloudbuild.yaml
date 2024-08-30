@@ -1,5 +1,5 @@
 steps:
-- id: 'git-repo-status'
+- id: 'build-status'
   name: 'alpine'
   entrypoint: 'sh'
   dir: /workspace
@@ -10,7 +10,12 @@ steps:
       echo "$REPO_NAME"
       echo "$BRANCH_NAME"
       echo "***********************"
-- name: 'gcr.io/cloud-builders/docker'
+- id: 'docker-build-push'
+  name: 'gcr.io/cloud-builders/docker'
   args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE}', '.' ]
+
+serviceAccount: 'projects/${_PROJECT_ID}/serviceAccounts/${_PROJECT_NUMBER}-compute@developer.gserviceaccount.com'
 images:
 - '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE}'
+options:
+  logging: CLOUD_LOGGING_ONLY
