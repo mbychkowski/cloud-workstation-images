@@ -12,6 +12,6 @@ export _PROJECT_NUMBER=$(gcloud projects describe "$_PROJECT_ID" --format="value
 ```
 
 ```
-gcloud builds submit --config=cloudbuild.yaml \
+gcloud builds submit --config=cloudbuild.yaml --project=${_PROJECT_ID} \
   --substitutions=_PROJECT_ID=${_PROJECT_ID},_PROJECT_NUMBER=${_PROJECT_NUMBER},_LOCATION=${_LOCATION},_REPOSITORY=${_REPOSITORY},_IMAGE=${_IMAGE} .
 ```

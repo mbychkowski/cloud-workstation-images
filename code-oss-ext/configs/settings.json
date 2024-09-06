@@ -29,12 +29,8 @@
   "editor.quickSuggestionsDelay": 30,
   "editor.suggestFontSize": 20,
   "editor.suggestLineHeight": 30,
-  "editor.letterSpacing": 0.5,
   "editor.rulers": [80, 100],
-  "workbench.editor.tabSizing": "shrink",
-  "workbench.colorCustomizations": {
-    "editor.lineHighlightBackground": "#223851"
-  },
+  // file exclusions
   "files.exclude": {
     "**/.cache": true,
     "**/.DS_Store": true,
