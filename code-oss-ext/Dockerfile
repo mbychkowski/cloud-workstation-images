@@ -38,15 +38,15 @@ RUN apt-get update && \
     git-lfs \
     gnupg \
     lsb-release \
+    python3.10-venv \
     software-properties-common \
     terraform
-
 
 # --------------
 # NPM: Packages
 # --------------
 RUN npm install -g \
-    next 
+    next
 
 # --------------
 # EXTENSIONS
@@ -65,7 +65,7 @@ RUN wget -O material-icon-theme.vsix $(curl -q https://open-vsx.org/api/PKief/ma
 RUN wget -O vscode-icons.vsix $(curl -q https://open-vsx.org/api/vscode-icons-team/vscode-icons | jq -r '.files.download') \
     && unzip vscode-icons.vsix "extension/*" \
     && mv extension /opt/code-oss/extensions/vscode-icons
-# Terraform extension    
+# Terraform extension
 RUN wget -O terraform.vsix $(curl -q https://open-vsx.org/api/hashicorp/terraform/linux-x64 | jq -r '.files.download') && \
     unzip terraform.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/terraform

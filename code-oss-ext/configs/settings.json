@@ -7,15 +7,11 @@
   "workbench.sideBar.location": "right",
   "workbench.startupEditor": "none",
   "workbench.statusBar.visible": true,
-  "workbench.editor.enablePreview": false,
   "workbench.activityBar.visible": true,
-  "workbench.editor.restoreViewState": true,
   "editor.guides.bracketPairs": "active",
   "editor.bracketPairColorization.enabled": true,
   "terminal.integrated.fontFamily": "Hack Nerd Font Mono",
   "editor.fontFamily": "Hack Nerd Font Mono, Menlo, Monaco, 'Courier New', monospace",
-  "editor.fontSize": 14,
-  "editor.lineHeight": 21,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
@@ -27,8 +23,6 @@
   // line highlight
   "editor.renderLineHighlight": "all",
   "editor.quickSuggestionsDelay": 30,
-  "editor.suggestFontSize": 20,
-  "editor.suggestLineHeight": 30,
   "editor.rulers": [80, 100],
   // file exclusions
   "files.exclude": {
@@ -50,8 +44,5 @@
     "javascriptreact",
     "typescript",
     "typescriptreact"
-  ],
-  "javascript.validate.enable": false,
-  "javascript.updateImportsOnFileMove.enabled": "never",
-  "typescript.updateImportsOnFileMove.enabled": "never"
+  ]
 }
