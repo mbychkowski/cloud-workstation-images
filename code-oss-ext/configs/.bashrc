@@ -116,3 +116,6 @@ if [ -f ~/.ssh ]; then
     eval "$(ssh-agent -s)"
     ssh-add ~/.ssh/*
 fi
+
+# Initialize starship for terminal customization
+eval "$(starship init bash)"

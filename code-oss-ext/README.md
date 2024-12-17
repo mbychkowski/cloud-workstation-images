@@ -1,17 +1,14 @@
 Example build to Google Cloud Build
 
-```
+```md
 # These might be okay for defaults
+export _PROJECT_ID=$(gcloud config get-value project)
 export _LOCATION="us-central1"
-export _REPOSITORY="vscider"
-export _IMAGE="vscider:latest"
-
-# Change this to project-it that will store the latest version
-export _PROJECT_ID=<your-project-id>
-export _PROJECT_NUMBER=$(gcloud projects describe "$_PROJECT_ID" --format="value(projectNumber)")
+export _IMAGE="vscider"
 ```
 
-```
+```bash
 gcloud builds submit --config=cloudbuild.yaml --project=${_PROJECT_ID} \
-  --substitutions=_PROJECT_ID=${_PROJECT_ID},_PROJECT_NUMBER=${_PROJECT_NUMBER},_LOCATION=${_LOCATION},_REPOSITORY=${_REPOSITORY},_IMAGE=${_IMAGE} .
+  --region=${_LOCATION} \
+  --substitutions=_LOCATION=${_LOCATION},_IMAGE=${_IMAGE} .
 ```
