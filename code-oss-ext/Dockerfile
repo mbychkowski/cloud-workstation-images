@@ -98,8 +98,3 @@ RUN mkdir /tmp/.codeoss-configs
 COPY ./configs /tmp/.codeoss-configs/
 COPY ./scripts/300_configure-ws-settings.sh /etc/workstation-startup.d
 RUN chmod 755 /etc/workstation-startup.d/300_configure-ws-settings.sh
-
-# --------------
-# General: Cleanup
-# --------------
-RUN rm -rf /tmp/*
