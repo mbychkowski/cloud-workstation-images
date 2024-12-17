@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export FONTS_PATH="/usr/share/fonts/Hack Nerd Font"
+export FONTS_PATH="/usr/share/fonts/truetype/hacknerdfont"
 export FONTS_HACK_VERSION="v3.3.0"
 export FONTS_HACK_ZIP="Hack.zip"
 
@@ -18,3 +18,6 @@ fi
 curl --fail --location --show-error https://github.com/ryanoasis/nerd-fonts/releases/download/${FONTS_HACK_VERSION}/${FONTS_HACK_ZIP} --output ${FONTS_HACK_ZIP}
 unzip -o -q -d ${FONTS_PATH} ${FONTS_HACK_ZIP}
 rm ${FONTS_HACK_ZIP}
+
+echo "fc-cache -fv"
+fc-cache -fv

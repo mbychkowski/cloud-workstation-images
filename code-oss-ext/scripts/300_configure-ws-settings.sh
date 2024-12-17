@@ -27,6 +27,3 @@ if [ -f /tmp/.codeoss-configs/.bashrc ]; then
   chown user:user "$HOME/.bashrc"
   chmod 644 "$HOME/.bashrc"
 fi
-
-echo "fc-cache -fv"
-fc-cache -fv
