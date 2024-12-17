@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-export FONTS_PATH="/usr/share/fonts/truetype/hacknerdfont"
 export FONTS_HACK_VERSION="v3.3.0"
-export FONTS_HACK_ZIP="Hack.zip"
+export FONTS_HACK_NAME="Meslo"
+export FONTS_PATH="/usr/share/fonts/truetype/${FONTS_HACK_NAME}"
+export FONTS_HACK_ZIP="${FONTS_HACK_NAME}.zip"
 
 if [ ! -d "${FONTS_PATH}" ]; then
   echo "Making fonts directory"

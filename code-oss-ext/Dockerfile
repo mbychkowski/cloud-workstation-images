@@ -31,7 +31,6 @@ RUN wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt install -y \
-    apt-transport-https \
     build-essential \
     ca-certificates \
     gh \
@@ -40,7 +39,16 @@ RUN apt-get update && \
     lsb-release \
     python3-venv \
     software-properties-common \
-    terraform
+    terraform \
+    zsh
+
+# --------------
+# shell: zsh
+# --------------
+ENV ZSH=/opt/workstation/oh-my-zsh
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+  git clone https://github.com/zsh-users/zsh-autosuggestions /opt/workstation/oh-my-zsh/plugins/zsh-autosuggestions && \
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /opt/workstation/oh-my-zsh/custom/themes/powerlevel10k
 
 # --------------
 # Customize: Make things pretty
@@ -85,6 +93,10 @@ RUN wget -O python.vsix $(curl -q https://open-vsx.org/api/ms-python/python/2024
 RUN wget -O vscode-eslint.vsix $(curl -q https://open-vsx.org/api/dbaeumer/vscode-eslint | jq -r '.files.download') && \
     unzip vscode-eslint.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/vscode-eslint
+# GitLens extension
+RUN wget -O gitlens.vsix $(curl -q https://open-vsx.org/api/eamodio/gitlens | jq -r '.files.download') && \
+    unzip gitlens.vsix "extension/*" && \
+    mv extension /opt/code-oss/extensions/gitlens
 
 # --------------
 # APT: Cleanup
@@ -95,6 +107,6 @@ RUN apt clean all
 # VSCODE: Settings & Extenstions
 # --------------
 RUN mkdir /tmp/.codeoss-configs
-COPY ./configs /tmp/.codeoss-configs/
-COPY ./scripts/300_configure-ws-settings.sh /etc/workstation-startup.d
+COPY ./configs/* /tmp/.codeoss-configs/
+COPY ./scripts/configure_workstation_settings.sh /etc/workstation-startup.d/300_configure-ws-settings.sh
 RUN chmod 755 /etc/workstation-startup.d/300_configure-ws-settings.sh
