@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 export FONTS_HACK_VERSION="v3.3.0"
 export FONTS_HACK_NAME="Meslo"

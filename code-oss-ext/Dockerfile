@@ -39,25 +39,25 @@ RUN apt-get update && \
     lsb-release \
     python3-venv \
     software-properties-common \
-    terraform \
-    zsh
+    terraform
 
 # --------------
 # shell: zsh
 # --------------
-ENV ZSH=/opt/workstation/oh-my-zsh
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
-  git clone https://github.com/zsh-users/zsh-autosuggestions /opt/workstation/oh-my-zsh/plugins/zsh-autosuggestions && \
-  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /opt/workstation/oh-my-zsh/custom/themes/powerlevel10k
+# ENV ZSH=/opt/workstation/oh-my-zsh
+# RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+#   git clone https://github.com/zsh-users/zsh-autosuggestions /opt/workstation/oh-my-zsh/plugins/zsh-autosuggestions && \
+#   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /opt/workstation/oh-my-zsh/custom/themes/powerlevel10k
 
 # --------------
 # Customize: Make things pretty
 # --------------
 RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
 
-COPY ./scripts/download_and_install_fonts.sh /tmp/
-RUN chmod +x /tmp/download_and_install_fonts.sh
-RUN /tmp/download_and_install_fonts.sh
+# COPY ./scripts/download_and_install_fonts.sh /tmp/
+# RUN chmod +x /tmp/download_and_install_fonts.sh
+# RUN /tmp/download_and_install_fonts.sh
+# RUN rm /tmp/download_and_install_fonts.sh
 
 # --------------
 # NPM: Packages
@@ -93,10 +93,10 @@ RUN wget -O python.vsix $(curl -q https://open-vsx.org/api/ms-python/python/2024
 RUN wget -O vscode-eslint.vsix $(curl -q https://open-vsx.org/api/dbaeumer/vscode-eslint | jq -r '.files.download') && \
     unzip vscode-eslint.vsix "extension/*" && \
     mv extension /opt/code-oss/extensions/vscode-eslint
-# GitLens extension
-RUN wget -O gitlens.vsix $(curl -q https://open-vsx.org/api/eamodio/gitlens | jq -r '.files.download') && \
-    unzip gitlens.vsix "extension/*" && \
-    mv extension /opt/code-oss/extensions/gitlens
+# # GitLens extension
+# RUN wget -O gitlens.vsix $(curl -q https://open-vsx.org/api/eamodio/gitlens | jq -r '.files.download') && \
+#     unzip gitlens.vsix "extension/*" && \
+#     mv extension /opt/code-oss/extensions/gitlens
 
 # --------------
 # APT: Cleanup
@@ -109,4 +109,4 @@ RUN apt clean all
 RUN mkdir /tmp/.codeoss-configs
 COPY ./configs/* /tmp/.codeoss-configs/
 COPY ./scripts/configure_workstation_settings.sh /etc/workstation-startup.d/300_configure-ws-settings.sh
-RUN chmod 755 /etc/workstation-startup.d/300_configure-ws-settings.sh
+RUN chmod +x /etc/workstation-startup.d/300_configure-ws-settings.sh
