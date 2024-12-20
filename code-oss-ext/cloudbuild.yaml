@@ -3,19 +3,29 @@ steps:
   name: 'alpine'
   entrypoint: 'sh'
   dir: /workspace
-  args: 
+  args:
   - '-c'
-  - | 
+  - |
       echo "***********************"
-      echo "$REPO_NAME"
-      echo "$BRANCH_NAME"
+      echo ""
+      echo "$PROJECT_ID"
+      echo "$PROJECT_NUMBER"
+      echo "$BUILD_ID"
+      echo "$LOCATION"
+      echo ""
       echo "***********************"
+
+# Build and push docker image to Artifact Registry
 - id: 'docker-build-push'
   name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE}', '.' ]
+  args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}', '.' ]
 
-serviceAccount: 'projects/${_PROJECT_ID}/serviceAccounts/${_PROJECT_NUMBER}-compute@developer.gserviceaccount.com'
+serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${PROJECT_NUMBER}-compute@developer.gserviceaccount.com'
 images:
-- '${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/${_IMAGE}'
+- '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}'
 options:
   logging: CLOUD_LOGGING_ONLY
+
+substitutions:
+  _LOCATION: us-central1
+  _IMAGE: vscider

@@ -1,0 +1,142 @@
+format = """
+[┌───](bold green)$aws$gcloud$openstack$azure$memory_usage$battery$time
+[│](bold green)[ ⚡]()\
+$hostname\
+$localip\
+$shlvl\
+$singularity\
+$kubernetes\
+$directory\
+$vcsh\
+$fossil_branch\
+$fossil_metrics\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$pijul_channel\
+$docker_context\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$gleam\
+$golang\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$quarto\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$swift\
+$terraform\
+$typst\
+$vlang\
+$vagrant\
+$zig\
+$buf\
+$nix_shell\
+$conda\
+$meson\
+$spack
+[└─ ](bold green)$character"""
+
+[directory]
+style = "bold green"
+truncation_length = 2
+truncation_symbol = "…/"
+format = "[ $path ]($style)"
+
+[hostname]
+style = "bold purple"
+
+[battery]
+full_symbol = '🔋 '
+charging_symbol = '⚡️ '
+discharging_symbol = '💀 '
+unknown_symbol = "❓ "
+empty_symbol = "❗ "
+
+[aws]
+style = "bold orange"
+symbol = "🅰 "
+
+[character]
+success_symbol = '[⟩](green)'
+error_symbol = '[⟩](red)'
+
+[cmd_duration]
+style = "bold yellow"
+
+[erlang]
+symbol = "ⓔ "
+
+[gcloud]
+format = ' on [$symbol$account(@$domain)(\($region\))]($style) '
+
+[git_branch]
+style = "bold pink"
+
+[git_status]
+style = "bold red"
+
+[nodejs]
+symbol = "[⬢](bold green) "
+
+[pulumi]
+symbol = "🧊 "
+
+[time]
+disabled = false
+utc_time_offset = '-5'
+time_format = "%R" # Hour:Minute Format
+format = '\[[⌚ $time]($style)\]'
+
+[username]
+style_user = "bold cyan"
+
+# Use the color palette
+palette = "dracula"
+
+# Define Dracula color palette
+[palettes.dracula]
+background = "#282a36"
+current_line = "#44475a"
+foreground = "#f8f8f2"
+comment = "#6272a4"
+cyan = "#8be9fd"
+green = "#50fa7b"
+orange = "#ffb86c"
+pink = "#ff79c6"
+purple = "#bd93f9"
+red = "#ff5555"
+yellow = "#f1fa8c"

@@ -3,15 +3,13 @@
   "files.trimTrailingWhitespace": true,
   "explorer.confirmDelete": false,
   "explorer.compactFolders": false,
-  "workbench.colorTheme": "Night Owl",
+  "workbench.colorTheme": "Dracula Theme",
   "workbench.sideBar.location": "right",
   "workbench.startupEditor": "none",
   "workbench.statusBar.visible": true,
-  "workbench.activityBar.visible": true,
   "editor.guides.bracketPairs": "active",
   "editor.bracketPairColorization.enabled": true,
-  "terminal.integrated.fontFamily": "Hack Nerd Font Mono",
-  "editor.fontFamily": "Hack Nerd Font Mono, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
@@ -23,7 +21,7 @@
   // line highlight
   "editor.renderLineHighlight": "all",
   "editor.quickSuggestionsDelay": 30,
-  "editor.rulers": [80, 100],
+  "editor.rulers": [72, 100],
   // file exclusions
   "files.exclude": {
     "**/.cache": true,
