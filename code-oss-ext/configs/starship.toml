@@ -101,7 +101,7 @@ style = "bold yellow"
 symbol = "ⓔ "
 
 [gcloud]
-format = ' on [$symbol$account(@$domain)(\($region\))]($style) '
+format = ' on [$symbol$account@ (\($project\))(\($region\))]($style) '
 
 [git_branch]
 style = "bold pink"
