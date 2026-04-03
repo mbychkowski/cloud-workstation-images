@@ -29,7 +29,7 @@ Environment=LD_LIBRARY_PATH=/var/lib/nvidia/lib64
 ExecStartPre=/bin/mkdir -p /run/user/1000
 ExecStartPre=/bin/chown 1000:1000 /run/user/1000
 ExecStartPre=/bin/chmod 700 /run/user/1000
-ExecStart=/home/user/.nix-profile/bin/sway
+ExecStart=/bin/bash -l -c 'source /home/user/.nix-profile/etc/profile.d/nix.sh && exec /home/user/.nix-profile/bin/sway'
 Restart=on-failure
 RestartSec=5
 
