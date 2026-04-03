@@ -156,7 +156,6 @@ RUN apt-get update && \
 COPY --from=novnc-builder /out/noVNC /opt/noVNC
 
 # Merge assets into the container and fix permissions.
-COPY .gemini /opt/workstation-skel/.gemini
 COPY boot /opt/workstation-skel/boot
 COPY configs /opt/workstation-skel/configs
 COPY dev-fonts /opt/workstation-skel/dev-fonts
