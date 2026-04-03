@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/noVNC/utils/novnc_proxy --listen 80 --vnc localhost:5901
+ExecStart=/opt/noVNC/utils/novnc_proxy --listen [::]:80 --vnc localhost:5901
 
 [Install]
 WantedBy=multi-user.target
