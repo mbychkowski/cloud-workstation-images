@@ -103,7 +103,7 @@ RUN runuser -u nixuser -- bash -c '. /home/nixuser/.nix-profile/etc/profile.d/ni
     echo "    neovim tmux tree ffmpeg git gh curl wget htop ripgrep fd jq unzip terraform" >> ~/.config/home-manager/home.nix && \
     echo "    chromium google-chrome jetbrains.idea-oss" >> ~/.config/home-manager/home.nix && \
     echo "    zed-editor" >> ~/.config/home-manager/home.nix && \
-    echo "    sway waybar foot wofi thunar grim slurp wl-clipboard clipman mako swaylock swayidle wayvnc" >> ~/.config/home-manager/home.nix && \
+    echo "    sway swaybg waybar foot wofi thunar grim slurp wl-clipboard clipman mako swaylock swayidle wayvnc" >> ~/.config/home-manager/home.nix && \
     echo "    nodejs_22" >> ~/.config/home-manager/home.nix && \
     echo "  ];" >> ~/.config/home-manager/home.nix && \
     echo "}" >> ~/.config/home-manager/home.nix && \
@@ -155,13 +155,16 @@ RUN apt-get update && \
 # Install TigerVNC and noVNC
 COPY --from=novnc-builder /out/noVNC /opt/noVNC
 
-# Merge assets into the container.
+# Merge assets into the container and fix permissions.
 COPY .gemini /opt/workstation-skel/.gemini
 COPY boot /opt/workstation-skel/boot
 COPY configs /opt/workstation-skel/configs
 COPY dev-fonts /opt/workstation-skel/dev-fonts
 COPY assets/opt /opt
 COPY assets/. /
+RUN chmod -R 755 /etc && \
+    chmod 644 /etc/passwd /etc/group /etc/shadow /etc/profile /etc/bash.bashrc /etc/environment && \
+    chmod 755 /google/scripts/entrypoint.sh
 
 # Run TigerVNC and noVNC as services.
 RUN ln -s /etc/systemd/system/tigervnc.service /etc/systemd/system/multi-user.target.wants/ && \
