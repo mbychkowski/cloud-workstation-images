@@ -25,11 +25,15 @@ Environment=WLR_LIBINPUT_NO_DEVICES=1
 Environment=XDG_RUNTIME_DIR=/run/user/1000
 Environment=XDG_SESSION_TYPE=wayland
 Environment=LD_LIBRARY_PATH=/var/lib/nvidia/lib64
+Environment=WLR_NO_HARDWARE_CURSORS=1
+Environment=WLR_RENDERER=gles2
+Environment=GBM_BACKEND=nvidia-drm
+Environment=__GLX_VENDOR_LIBRARY_NAME=nvidia
 Environment=TZ=America/Los_Angeles
 ExecStartPre=/bin/mkdir -p /run/user/1000
 ExecStartPre=/bin/chown 1000:1000 /run/user/1000
 ExecStartPre=/bin/chmod 700 /run/user/1000
-ExecStart=/bin/bash -l -c 'source /home/user/.nix-profile/etc/profile.d/nix.sh && exec /home/user/.nix-profile/bin/sway'
+ExecStart=/bin/bash -l -c 'source /home/user/.nix-profile/etc/profile.d/nix.sh && exec /home/user/.nix-profile/bin/sway --unsupported-gpu'
 Restart=on-failure
 RestartSec=5
 
