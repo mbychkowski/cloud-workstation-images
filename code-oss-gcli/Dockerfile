@@ -100,7 +100,7 @@ RUN runuser -u nixuser -- bash -c '. /home/nixuser/.nix-profile/etc/profile.d/ni
     echo "  nixpkgs.config.allowUnfree = true;" >> ~/.config/home-manager/home.nix && \
     echo "  programs.home-manager.enable = true;" >> ~/.config/home-manager/home.nix && \
     echo "  home.packages = with pkgs; [" >> ~/.config/home-manager/home.nix && \
-    echo "    neovim tmux tree ffmpeg git gh curl wget htop ripgrep fd jq unzip terraform" >> ~/.config/home-manager/home.nix && \
+    echo "    neovim tmux tree ffmpeg git gh curl wget htop ripgrep fd jq unzip terraform starship" >> ~/.config/home-manager/home.nix && \
     echo "    chromium google-chrome jetbrains.idea-oss" >> ~/.config/home-manager/home.nix && \
     echo "    zed-editor" >> ~/.config/home-manager/home.nix && \
     echo "    sway swaybg waybar foot wofi thunar grim slurp wl-clipboard clipman mako swaylock swayidle wayvnc" >> ~/.config/home-manager/home.nix && \

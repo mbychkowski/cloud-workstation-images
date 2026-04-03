@@ -39,9 +39,16 @@ log "Updating Nix channel and Home Manager..."
 runuser -u $USER -- bash -c ". $NIX_SH && nix-channel --update && home-manager switch" >> "$LOG_FILE" 2>&1
 log "Nix/Home Manager update complete"
 
-# --- Install VS Code Extensions (Dracula Theme) ---
-log "Installing VS Code Extensions..."
+# --- Configure VS Code (Settings & Extensions) ---
+log "Configuring VS Code settings and extensions..."
+
+# Copy settings.json to the correct User directory
+VSCODE_USER_DIR="$HOME_DIR/.config/Code - OSS/User"
+runuser -u $USER -- mkdir -p "$VSCODE_USER_DIR"
+runuser -u $USER -- cp "$HOME_DIR/configs/code-oss/settings.json" "$VSCODE_USER_DIR/settings.json"
+
+# Install Dracula Theme Extension
 runuser -u $USER -- bash -c ". $NIX_SH && code --install-extension dracula-theme.theme-dracula --force" >> "$LOG_FILE" 2>&1
-log "VS Code Extensions installed"
+log "VS Code configuration complete"
 
 log "=== App update complete ==="

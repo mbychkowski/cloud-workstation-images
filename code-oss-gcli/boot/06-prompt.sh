@@ -13,15 +13,6 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] [06-prompt] $1"; }
 
 # --- Ensure Starship is available ---
 STARSHIP_PATH="$HOME_DIR/.nix-profile/bin/starship"
-if [ ! -x "$STARSHIP_PATH" ]; then
-    STARSHIP_PATH="$HOME_DIR/.local/bin/starship"
-    if [ ! -x "$STARSHIP_PATH" ]; then
-        log "Installing Starship via curl..."
-        runuser -u $USER -- mkdir -p "$HOME_DIR/.local/bin"
-        runuser -u $USER -- bash -c 'curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$HOME/.local/bin"' 2>&1
-        log "Starship installed to $HOME_DIR/.local/bin/starship"
-    fi
-fi
 log "Starship available at: $(which starship 2>/dev/null || echo "$STARSHIP_PATH")"
 
 # --- Configure Starship ---
