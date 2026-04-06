@@ -1,11 +1,6 @@
 FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/code-oss:latest
 
 # --------------
-# # Versions
-# --------------
-ENV NODE_VER=20.x
-
-# --------------
 # PKG: Terraform
 # --------------
 RUN wget -O- https://apt.releases.hashicorp.com/gpg | \
