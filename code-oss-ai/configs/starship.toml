@@ -105,6 +105,7 @@ format = ' on [$symbol$account@ (\($project\))(\($region\))]($style) '
 
 [git_branch]
 style = "bold pink"
+symbol = "🌱 "
 
 [git_status]
 style = "bold red"
