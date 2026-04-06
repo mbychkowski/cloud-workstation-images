@@ -65,6 +65,7 @@ RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
 # --------------
 RUN npm install -g \
     next \
+    vite \
     react-scripts@latest \
     @google/gemini-cli \
     @anthropic-ai/claude-code \
