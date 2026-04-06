@@ -10,6 +10,12 @@
   "workbench.statusBar.visible": true,
   "editor.fontFamily": "'MesloLGS Nerd Font', 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace",
   "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "terminal.integrated.profiles.linux": {
+    "zsh": {
+      "path": "zsh"
+    }
+  },
   "editor.guides.bracketPairs": "active",
   "editor.bracketPairColorization.enabled": true,
   "editor.fontLigatures": true,

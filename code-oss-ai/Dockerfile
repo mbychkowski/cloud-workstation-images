@@ -45,15 +45,18 @@ RUN apt-get update && \
     fd-find \
     htop \
     tree \
-    golang-go
+    golang-go \
+    zsh
 
 # --------------
-# shell: zsh
+# shell: zsh & Plugins
 # --------------
-# ENV ZSH=/opt/workstation/oh-my-zsh
-# RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
-#   git clone https://github.com/zsh-users/zsh-autosuggestions /opt/workstation/oh-my-zsh/plugins/zsh-autosuggestions && \
-#   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /opt/workstation/oh-my-zsh/custom/themes/powerlevel10k
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions /opt/zsh/zsh-autosuggestions && \
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/zsh/zsh-syntax-highlighting && \
+    echo 'source /opt/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /etc/zsh/zshrc && \
+    echo 'source /opt/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> /etc/zsh/zshrc && \
+    echo 'eval "$(starship init zsh)"' >> /etc/zsh/zshrc && \
+    chsh -s /usr/bin/zsh user
 
 # --------------
 # Customize: Make things pretty
