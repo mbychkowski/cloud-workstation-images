@@ -55,8 +55,7 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions /opt/zsh/zsh-auto
     git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/zsh/zsh-syntax-highlighting && \
     echo 'source /opt/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /etc/zsh/zshrc && \
     echo 'source /opt/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> /etc/zsh/zshrc && \
-    echo 'eval "$(starship init zsh)"' >> /etc/zsh/zshrc && \
-    chsh -s /usr/bin/zsh user
+    echo 'eval "$(starship init zsh)"' >> /etc/zsh/zshrc
 
 # --------------
 # Customize: Make things pretty
