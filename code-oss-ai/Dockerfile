@@ -45,7 +45,6 @@ RUN apt-get update && \
     fd-find \
     htop \
     tree \
-    golang-go \
     zsh
 
 # --------------
@@ -55,6 +54,8 @@ RUN git clone https://github.com/zsh-users/zsh-autosuggestions /opt/zsh/zsh-auto
     git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/zsh/zsh-syntax-highlighting && \
     echo 'source /opt/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /etc/zsh/zshrc && \
     echo 'source /opt/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> /etc/zsh/zshrc && \
+    echo 'export NVM_DIR="/opt/nvm"' >> /etc/zsh/zshrc && \
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /etc/zsh/zshrc && \
     echo 'eval "$(starship init zsh)"' >> /etc/zsh/zshrc
 
 # --------------
@@ -80,16 +81,27 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
 RUN npx playwright install --with-deps chromium
 
 # --------------
-# Toolchains (Python, Node, Rust, GCP)
+# Toolchains (Python, Node/NVM, Rust, Go, GCP)
 # --------------
 ENV RUSTUP_HOME=/opt/rust \
     CARGO_HOME=/opt/rust/cargo \
     BUN_INSTALL=/opt/bun \
-    UV_INSTALL_DIR=/opt/uv
+    UV_INSTALL_DIR=/opt/uv \
+    NVM_DIR=/opt/nvm
 
-ENV PATH="${CARGO_HOME}/bin:${BUN_INSTALL}/bin:${UV_INSTALL_DIR}/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:${CARGO_HOME}/bin:${BUN_INSTALL}/bin:${UV_INSTALL_DIR}/bin:${PATH}"
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+RUN mkdir -p $NVM_DIR && \
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+    . $NVM_DIR/nvm.sh && nvm install 22 && nvm alias default 22 && nvm use default && \
+    ln -sf $(which node) /usr/local/bin/node && \
+    ln -sf $(which npm) /usr/local/bin/npm && \
+    ln -sf $(which npx) /usr/local/bin/npx && \
+    GO_VERSION=$(curl -fsSL "https://go.dev/VERSION?m=text" | grep -o '^go[0-9]*\.[0-9]*\.[0-9]*' | head -1) && \
+    curl -fsSLO "https://dl.google.com/go/${GO_VERSION}.linux-amd64.tar.gz" && \
+    tar -C /usr/local -xzf "${GO_VERSION}.linux-amd64.tar.gz" && \
+    rm "${GO_VERSION}.linux-amd64.tar.gz" && \
+    curl -LsSf https://astral.sh/uv/install.sh | sh && \
     curl -fsSL https://bun.sh/install | bash && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path && \
     curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && \
