@@ -25,8 +25,9 @@ images:
 - '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}'
 options:
   logging: CLOUD_LOGGING_ONLY
+timeout: 14400s
 
 substitutions:
   _LOCATION: us-central1
-  _IMAGE: vscider
+  _IMAGE: vscider-ai
   _DOCKERFILE_PATH: '.'
