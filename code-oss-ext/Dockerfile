@@ -28,7 +28,7 @@ RUN wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
 # --------------
 # Update: System Packages, Dependencies
 # --------------
-RUN apt-get update && \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update -o Acquire::Retries=3 && \
     apt-get upgrade -y && \
     apt install -y \
     build-essential \
@@ -39,7 +39,11 @@ RUN apt-get update && \
     lsb-release \
     python3-venv \
     software-properties-common \
-    terraform
+    terraform \
+    neovim \
+    fzf \
+    bat \
+    tmux
 
 # --------------
 # shell: zsh

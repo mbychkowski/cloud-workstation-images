@@ -23,7 +23,7 @@ RUN wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
 # --------------
 # Update: System Packages, Dependencies
 # --------------
-RUN apt-get update && \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update -o Acquire::Retries=3 && \
     apt-get upgrade -y && \
     apt install -y \
     build-essential \
@@ -40,18 +40,17 @@ RUN apt-get update && \
     fd-find \
     htop \
     tree \
-    zsh
+    zsh \
+    neovim \
+    fzf \
+    bat \
+    tmux
 
 # --------------
 # shell: zsh & Plugins
 # --------------
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions /opt/zsh/zsh-autosuggestions && \
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/zsh/zsh-syntax-highlighting && \
-    echo 'source /opt/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh' >> /etc/zsh/zshrc && \
-    echo 'source /opt/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> /etc/zsh/zshrc && \
-    echo 'export NVM_DIR="/opt/nvm"' >> /etc/zsh/zshrc && \
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /etc/zsh/zshrc && \
-    echo 'eval "$(starship init zsh)"' >> /etc/zsh/zshrc
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting /opt/zsh/zsh-syntax-highlighting
 
 # --------------
 # Customize: Make things pretty
@@ -73,7 +72,8 @@ RUN npm install -g \
 # Playwright Headless Browsers & OS Dependencies
 # --------------
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright
-RUN npx playwright install --with-deps chromium
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update -o Acquire::Retries=3 && \
+    npx playwright install --with-deps chromium
 
 # --------------
 # Toolchains (Python, Node/NVM, Rust, Go, GCP)
@@ -84,7 +84,7 @@ ENV RUSTUP_HOME=/opt/rust \
     UV_INSTALL_DIR=/opt/uv \
     NVM_DIR=/opt/nvm
 
-ENV PATH="/usr/local/go/bin:${CARGO_HOME}/bin:${BUN_INSTALL}/bin:${UV_INSTALL_DIR}/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:${CARGO_HOME}/bin:${BUN_INSTALL}/bin:${UV_INSTALL_DIR}:${PATH}"
 
 RUN mkdir -p $NVM_DIR && \
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
@@ -126,10 +126,16 @@ RUN EXTENSIONS=" \
     eamodio/gitlens \
     usernamehw/errorlens \
     esbenp/prettier-vscode \
+    anthropic/claude-code \
     " && \
     for ext in $EXTENSIONS; do \
         ext_name=$(echo $ext | cut -d'/' -f2) && \
-        wget -qO ${ext_name}.vsix $(curl -s https://open-vsx.org/api/$ext | jq -r '.files.download') && \
+        ext_publisher=$(echo $ext | cut -d'/' -f1) && \
+        download_url=$(curl -s https://open-vsx.org/api/$ext | jq -r '.files.download') && \
+        if [ "$download_url" = "null" ] || [ -z "$download_url" ]; then \
+            download_url="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${ext_publisher}/vsextensions/${ext_name}/latest/vspackage"; \
+        fi && \
+        wget -qO ${ext_name}.vsix "$download_url" && \
         unzip -q ${ext_name}.vsix "extension/*" && \
         mv extension /opt/code-oss/extensions/${ext_name} && \
         rm ${ext_name}.vsix; \
@@ -144,6 +150,6 @@ RUN apt clean all
 # VSCODE: Settings & Extenstions
 # --------------
 RUN mkdir /tmp/.codeoss-configs
-COPY ./configs/* /tmp/.codeoss-configs/
+COPY ./configs/ /tmp/.codeoss-configs/
 COPY ./scripts/configure_workstation_settings.sh /etc/workstation-startup.d/300_configure-ws-settings.sh
 RUN chmod +x /etc/workstation-startup.d/300_configure-ws-settings.sh

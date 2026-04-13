@@ -21,4 +21,10 @@ if [ -f "/tmp/.codeoss-configs/settings.json" ]; then
   chmod -R 755 "$HOME_DIR/.codeoss-cloudworkstations"
 fi
 
+if [ -f "/tmp/.codeoss-configs/.zshrc" ]; then
+  mv /tmp/.codeoss-configs/.zshrc "$HOME_DIR/.zshrc"
+  chown user:user "$HOME_DIR/.zshrc"
+  chmod 644 "$HOME_DIR/.zshrc"
+fi
+
 rm -rf /tmp/.codeoss-configs
