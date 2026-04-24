@@ -19,7 +19,7 @@ steps:
 - id: 'docker-build-push'
   name: 'gcr.io/cloud-builders/docker'
   dir: 'code-oss-ai'
-  args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}', '${_DOCKERFILE_PATH}' ]
+  args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}', '.' ]
 
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${PROJECT_NUMBER}-compute@developer.gserviceaccount.com'
 images:
@@ -31,4 +31,3 @@ timeout: 14400s
 substitutions:
   _LOCATION: us-central1
   _IMAGE: vscider-ai
-  _DOCKERFILE_PATH: '.'
