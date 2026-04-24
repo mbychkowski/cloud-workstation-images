@@ -6,10 +6,16 @@
   "workbench.colorTheme": "Dracula Theme",
   "workbench.iconTheme": "vscode-icons",
   "workbench.sideBar.location": "right",
+  "workbench.panel.defaultLocation": "left",
   "workbench.startupEditor": "none",
   "workbench.statusBar.visible": true,
-  "editor.fontFamily": "'MesloLGS Nerd Font', 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace",
-  "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace",
+  "chat.showViewByDefault": false,
+  "chat.commandCenter.enabled": false,
+  "editor.fontFamily": "'MesloLGS Nerd Font', 'Fira Code', Consolas, 'Courier New', monospace",
+  "editor.fontSize": 16,
+  "editor.fontWeight": "600",
+  "terminal.integrated.fontFamily": "'MesloLGS Nerd Font', 'Fira Code', Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontWeight": "600",
   "terminal.integrated.defaultProfile.linux": "zsh",
   "terminal.integrated.profiles.linux": {
     "zsh": {
@@ -44,7 +50,7 @@
   },
   // eslint
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "eslint.validate": [
     "javascript",

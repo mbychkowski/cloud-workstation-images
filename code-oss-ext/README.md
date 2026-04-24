@@ -4,7 +4,7 @@ Example build to Google Cloud Build
 # These might be okay for defaults
 export _PROJECT_ID=$(gcloud config get-value project)
 export _LOCATION="us-central1"
-export _IMAGE="vscider"
+export _IMAGE="vscider-ai"
 ```
 
 ```bash
