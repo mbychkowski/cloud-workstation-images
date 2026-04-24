@@ -18,6 +18,7 @@ steps:
 # Build and push docker image to Artifact Registry
 - id: 'docker-build-push'
   name: 'gcr.io/cloud-builders/docker'
+  dir: 'linuxbox-gcli'
   args: [ 'build', '-t', '${_LOCATION}-docker.pkg.dev/${PROJECT_ID}/workstations/${_IMAGE}:${BUILD_ID}', '${_DOCKERFILE_PATH}' ]
 
 serviceAccount: 'projects/${PROJECT_ID}/serviceAccounts/${PROJECT_NUMBER}-compute@developer.gserviceaccount.com'
@@ -31,3 +32,4 @@ substitutions:
   _LOCATION: us-central1
   _IMAGE: vscider-gcli
   _DOCKERFILE_PATH: '.'
+
