@@ -159,6 +159,19 @@ if ! command -v helm &> /dev/null; then
     rm get_helm.sh
 fi
 
+# Antigravity CLI and Python SDK
+echo ">> Installing Antigravity CLI..."
+if ! command -v antigravity &> /dev/null && ! command -v agy &> /dev/null; then
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
+
+echo ">> Installing Antigravity SDK..."
+if command -v uv &> /dev/null; then
+    uv pip install --system google-antigravity || pip3 install --break-system-packages google-antigravity || pip3 install google-antigravity || true
+else
+    pip3 install --break-system-packages google-antigravity || pip3 install google-antigravity || true
+fi
+
 # ------------------------------------------------------------------------------
 # 5. Global NPM Packages & Playwright
 # ------------------------------------------------------------------------------

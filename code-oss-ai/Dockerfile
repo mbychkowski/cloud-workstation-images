@@ -109,6 +109,12 @@ RUN mkdir -p $NVM_DIR && \
     rm skaffold kubectl get_helm.sh
 
 # --------------
+# Antigravity CLI & Python SDK
+# --------------
+RUN curl -fsSL https://antigravity.google/cli/install.sh | bash && \
+    uv pip install --system google-antigravity
+
+# --------------
 # EXTENSIONS
 # --------------
 RUN EXTENSIONS=" \
