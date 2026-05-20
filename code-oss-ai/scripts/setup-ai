@@ -1,0 +1,231 @@
+#!/bin/bash
+# setup-ai: Securely configure API keys for Anthropic and Gemini
+
+# ANSI styling
+BOLD_PURPLE="\033[1;35m"
+BOLD_CYAN="\033[1;36m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RED="\033[31m"
+RESET="\033[0m"
+
+echo -e "${BOLD_PURPLE}==========================================================${RESET}"
+echo -e "${BOLD_PURPLE}          🚀 Ephemeral AI Workstation Key Manager         ${RESET}"
+echo -e "${BOLD_PURPLE}==========================================================${RESET}"
+echo "This tool helps you securely configure and persist your API keys."
+echo "If your Cloud Workstation is authenticated to Google Cloud,"
+echo "we will also attempt to auto-fetch keys from Google Secret Manager."
+echo "----------------------------------------------------------"
+
+LOCAL_CONFIG="$HOME/.zshrc.local"
+touch "$LOCAL_CONFIG"
+
+# Helper function to query Secret Manager with secure tenancy
+fetch_from_secret_manager() {
+    local base_secret_name=$1
+    if command -v gcloud &> /dev/null; then
+        # Fetch the active authenticated account
+        local active_account=$(gcloud config get-value core/account 2>/dev/null)
+        if [ -n "$active_account" ] && [ "$active_account" != "(unset)" ]; then
+            # Convert user@domain.com -> user_domain_com (valid Secret Manager name)
+            local tenant_id=$(echo "$active_account" | sed 's/[@.]/_/g')
+            local tenant_secret_name="${tenant_id}__${base_secret_name}"
+            
+            # 1. Highly Secure: Try fetching user-scoped tenant secret first
+            local secret_val=$(gcloud secrets versions access latest --secret="$tenant_secret_name" 2>/dev/null)
+            if [ -n "$secret_val" ]; then
+                echo "$secret_val"
+                return 0
+            fi
+        fi
+
+        # 2. Fallback: Try fetching project-global shared secret
+        local global_secret_val=$(gcloud secrets versions access latest --secret="$base_secret_name" 2>/dev/null)
+        if [ -n "$global_secret_val" ]; then
+            echo "$global_secret_val"
+            return 0
+        fi
+    fi
+    return 1
+}
+
+# Helper function to save/vault a secret in Secret Manager with secure tenancy
+save_to_secret_manager() {
+    local base_secret_name=$1
+    local secret_val=$2
+    
+    if command -v gcloud &> /dev/null; then
+        local active_account=$(gcloud config get-value core/account 2>/dev/null)
+        if [ -n "$active_account" ] && [ "$active_account" != "(unset)" ]; then
+            local tenant_id=$(echo "$active_account" | sed 's/[@.]/_/g')
+            local tenant_secret_name="${tenant_id}__${base_secret_name}"
+            
+            echo "   🛡️  Attempting to securely vault key in Google Secret Manager..."
+            echo "      (Secret Name: $tenant_secret_name)"
+            
+            # Check if secret already exists
+            if gcloud secrets describe "$tenant_secret_name" &>/dev/null; then
+                # Secret exists, add a new version
+                if echo -n "$secret_val" | gcloud secrets versions add "$tenant_secret_name" --data-file=- &>/dev/null; then
+                    echo -e "      ${GREEN}✅ Successfully uploaded new version to Secret Manager!${RESET}"
+                    return 0
+                fi
+            else
+                # Secret doesn't exist, create it with the value
+                if gcloud secrets create "$tenant_secret_name" --replication-policy="automatic" &>/dev/null && \
+                   echo -n "$secret_val" | gcloud secrets versions add "$tenant_secret_name" --data-file=- &>/dev/null; then
+                    # Also grant the active account Secret Manager Secret Version Accessor role for explicit security
+                    gcloud secrets add-iam-policy-binding "$tenant_secret_name" \
+                        --member="user:$active_account" \
+                        --role="roles/secretmanager.secretVersionAccessor" &>/dev/null
+                    echo -e "      ${GREEN}✅ Successfully created secret and uploaded version to Secret Manager!${RESET}"
+                    return 0
+                fi
+            fi
+            echo -e "      ${RED}❌ Failed to upload secret. Check your GCP IAM permissions for Secret Manager.${RESET}"
+        else
+            echo -e "      ${YELLOW}⚠️  No active gcloud account to associate this secret with.${RESET}"
+        fi
+    else
+        echo -e "      ${RED}❌ gcloud CLI not available to save secret.${RESET}"
+    fi
+    return 1
+}
+
+# ------------------------------------------------------------------------------
+# 1. Google Cloud Context & Authentication Setup
+# ------------------------------------------------------------------------------
+echo -e "${BOLD_CYAN}>> Checking Google Cloud CLI Authentication...${RESET}"
+if command -v gcloud &> /dev/null; then
+    ACTIVE_ACCOUNT=$(gcloud auth list --filter=status=ACTIVE --format="value(account)" 2>/dev/null)
+    if [ -n "$ACTIVE_ACCOUNT" ]; then
+        echo -e "   ${GREEN}✅ Authenticated as: $ACTIVE_ACCOUNT${RESET}"
+    else
+        echo -e "   ${YELLOW}⚠️  No active Google Cloud account detected.${RESET}"
+        echo "   To fetch keys from Secret Manager or use GCP SDKs, please authenticate."
+        read -p "   Would you like to log in to Google Cloud now? (y/N): " run_login
+        if [[ "$run_login" =~ ^[Yy]$ ]]; then
+            gcloud auth login
+            ACTIVE_ACCOUNT=$(gcloud auth list --filter=status=ACTIVE --format="value(account)" 2>/dev/null)
+        fi
+    fi
+
+    # Check project
+    ACTIVE_PROJECT=$(gcloud config get-value project 2>/dev/null)
+    if [ -n "$ACTIVE_PROJECT" ] && [ "$ACTIVE_PROJECT" != "(unset)" ]; then
+        echo -e "   ${GREEN}✅ Active GCP Project: $ACTIVE_PROJECT${RESET}"
+    else
+        echo -e "   ${YELLOW}⚠️  No active Google Cloud Project configured.${RESET}"
+        read -p "   Enter GCP Project ID to set (or press Enter to skip): " user_project
+        if [ -n "$user_project" ]; then
+            gcloud config set project "$user_project"
+            ACTIVE_PROJECT="$user_project"
+            echo -e "   ${GREEN}✅ Project set to: $ACTIVE_PROJECT${RESET}"
+        fi
+    fi
+
+    # Check region
+    ACTIVE_REGION=$(gcloud config get-value compute/region 2>/dev/null)
+    if [ -n "$ACTIVE_REGION" ] && [ "$ACTIVE_REGION" != "(unset)" ]; then
+        echo -e "   ${GREEN}✅ Active GCP Region: $ACTIVE_REGION${RESET}"
+    else
+        # Try fall back to zone
+        ACTIVE_ZONE=$(gcloud config get-value compute/zone 2>/dev/null)
+        if [ -n "$ACTIVE_ZONE" ] && [ "$ACTIVE_ZONE" != "(unset)" ]; then
+            echo -e "   ${GREEN}✅ Active GCP Zone: $ACTIVE_ZONE${RESET}"
+        else
+            echo -e "   ${YELLOW}⚠️  No default GCP region/zone configured.${RESET}"
+            read -p "   Enter default GCP Region (e.g. us-central1, or press Enter to skip): " user_region
+            if [ -n "$user_region" ]; then
+                gcloud config set compute/region "$user_region"
+                ACTIVE_REGION="$user_region"
+                echo -e "   ${GREEN}✅ Region set to: $ACTIVE_REGION${RESET}"
+            fi
+        fi
+    fi
+else
+    echo -e "   ${RED}❌ Google Cloud CLI (gcloud) is not installed.${RESET}"
+fi
+echo "----------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
+# 2. ANTHROPIC_API_KEY Setup
+# ------------------------------------------------------------------------------
+echo -e "${BOLD_CYAN}>> Configuring ANTHROPIC_API_KEY...${RESET}"
+if [ -n "$ANTHROPIC_API_KEY" ]; then
+    echo -e "   ${GREEN}✅ ANTHROPIC_API_KEY is already active in your current session.${RESET}"
+else
+    # speculative look in Secret Manager
+    echo "   🔍 Probing Google Secret Manager for 'ANTHROPIC_API_KEY'..."
+    SECRET_VAL=$(fetch_from_secret_manager "ANTHROPIC_API_KEY")
+    if [ $? -eq 0 ]; then
+        echo -e "   ${GREEN}✅ Successfully auto-fetched key from Secret Manager!${RESET}"
+        # Remove any existing export from config before appending
+        sed -i '/export ANTHROPIC_API_KEY=/d' "$LOCAL_CONFIG" 2>/dev/null || true
+        echo "export ANTHROPIC_API_KEY=\"$SECRET_VAL\"" >> "$LOCAL_CONFIG"
+        export ANTHROPIC_API_KEY="$SECRET_VAL"
+    else
+        echo -e "   ${YELLOW}⚠️  Secret Manager check failed or was not authorized.${RESET}"
+        read -rsp "   Enter your Anthropic API Key (or press Enter to skip): " user_key
+        echo ""
+        if [ -n "$user_key" ]; then
+            sed -i '/export ANTHROPIC_API_KEY=/d' "$LOCAL_CONFIG" 2>/dev/null || true
+            echo "export ANTHROPIC_API_KEY=\"$user_key\"" >> "$LOCAL_CONFIG"
+            export ANTHROPIC_API_KEY="$user_key"
+            echo -e "   ${GREEN}✅ Key successfully saved to ~/.zshrc.local!${RESET}"
+            
+            # Interactive Vaulting Option
+            read -p "   Would you like to securely vault this key in Google Secret Manager? (y/N): " vault_key
+            if [[ "$vault_key" =~ ^[Yy]$ ]]; then
+                save_to_secret_manager "ANTHROPIC_API_KEY" "$user_key"
+            fi
+        else
+            echo "   Skipping Anthropic Key setup."
+        fi
+    fi
+fi
+echo "----------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
+# 3. GEMINI_API_KEY Setup
+# ------------------------------------------------------------------------------
+echo -e "${BOLD_CYAN}>> Configuring GEMINI_API_KEY...${RESET}"
+if [ -n "$GEMINI_API_KEY" ]; then
+    echo -e "   ${GREEN}✅ GEMINI_API_KEY is already active in your current session.${RESET}"
+else
+    # speculative look in Secret Manager
+    echo "   🔍 Probing Google Secret Manager for 'GEMINI_API_KEY'..."
+    SECRET_VAL=$(fetch_from_secret_manager "GEMINI_API_KEY")
+    if [ $? -eq 0 ]; then
+        echo -e "   ${GREEN}✅ Successfully auto-fetched key from Secret Manager!${RESET}"
+        sed -i '/export GEMINI_API_KEY=/d' "$LOCAL_CONFIG" 2>/dev/null || true
+        echo "export GEMINI_API_KEY=\"$SECRET_VAL\"" >> "$LOCAL_CONFIG"
+        export GEMINI_API_KEY="$SECRET_VAL"
+    else
+        echo -e "   ${YELLOW}⚠️  Secret Manager check failed or was not authorized.${RESET}"
+        read -rsp "   Enter your Gemini API Key (or press Enter to skip): " user_key
+        echo ""
+        if [ -n "$user_key" ]; then
+            sed -i '/export GEMINI_API_KEY=/d' "$LOCAL_CONFIG" 2>/dev/null || true
+            echo "export GEMINI_API_KEY=\"$user_key\"" >> "$LOCAL_CONFIG"
+            export GEMINI_API_KEY="$user_key"
+            echo -e "   ${GREEN}✅ Key successfully saved to ~/.zshrc.local!${RESET}"
+            
+            # Interactive Vaulting Option
+            read -p "   Would you like to securely vault this key in Google Secret Manager? (y/N): " vault_key
+            if [[ "$vault_key" =~ ^[Yy]$ ]]; then
+                save_to_secret_manager "GEMINI_API_KEY" "$user_key"
+            fi
+        else
+            echo "   Skipping Gemini Key setup."
+        fi
+    fi
+fi
+echo "----------------------------------------------------------"
+
+# ------------------------------------------------------------------------------
+# End of Config
+# ------------------------------------------------------------------------------
+echo -e "${GREEN}Configuration complete! Your environment keys are active and saved.${RESET}"
+echo -e "Saved keys will load automatically on all future shell starts."
+echo -e "${BOLD_PURPLE}==========================================================${RESET}"

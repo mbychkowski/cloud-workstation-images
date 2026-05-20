@@ -78,3 +78,25 @@ export NVM_DIR="/opt/nvm"
 if command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
+
+# Load local persistent session configurations (e.g. API keys)
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# Custom MOTD: Rust TUI AI Dashboard
+if [ -x /usr/local/bin/ai-dashboard ]; then
+  # Only execute in interactive shells to avoid disrupting scp, non-interactive ssh, or scripts
+  if [[ -o interactive ]]; then
+    /usr/local/bin/ai-dashboard
+    AI_EXIT_CODE=$?
+    if [ $AI_EXIT_CODE -eq 2 ]; then
+      if command -v setup-ai &> /dev/null; then
+        setup-ai
+        # Source again to make newly set keys active in current shell
+        [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+      else
+        echo -e "\033[31mError: 'setup-ai' utility is not available in PATH.\033[0m"
+      fi
+    fi
+  fi
+fi
+

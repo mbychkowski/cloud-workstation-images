@@ -166,11 +166,12 @@ if ! command -v antigravity &> /dev/null && ! command -v agy &> /dev/null; then
 fi
 
 echo ">> Installing Antigravity SDK..."
-if command -v uv &> /dev/null; then
-    uv pip install --system google-antigravity || pip3 install --break-system-packages google-antigravity || pip3 install google-antigravity || true
-else
-    pip3 install --break-system-packages google-antigravity || pip3 install google-antigravity || true
-fi
+# Prefer user-space installation to bypass PEP-668 (externally managed environment) and permission issues locally.
+# Fallback to system-wide installation if needed (with break-system-packages).
+pip3 install --user google-antigravity || \
+uv pip install --system --break-system-packages google-antigravity || \
+pip3 install --break-system-packages google-antigravity || \
+true
 
 # ------------------------------------------------------------------------------
 # 5. Global NPM Packages & Playwright

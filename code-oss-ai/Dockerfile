@@ -84,6 +84,10 @@ ENV RUSTUP_HOME=/opt/rust \
     UV_INSTALL_DIR=/opt/uv \
     NVM_DIR=/opt/nvm
 
+# NVIDIA Container Toolkit capabilities
+ENV NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
 ENV PATH="/usr/local/go/bin:${CARGO_HOME}/bin:${BUN_INSTALL}/bin:${UV_INSTALL_DIR}:${PATH}"
 
 RUN mkdir -p $NVM_DIR && \
@@ -111,8 +115,39 @@ RUN mkdir -p $NVM_DIR && \
 # --------------
 # Antigravity CLI & Python SDK
 # --------------
-RUN AGY_INSTALL_DIR=/usr/local/bin curl -fsSL https://antigravity.google/cli/install.sh | bash && \
+RUN curl -fsSL https://antigravity.google/cli/install.sh | bash -s -- --dir /usr/local/bin && \
     uv pip install --system --break-system-packages google-antigravity
+
+# --------------
+# Tool: Aider CLI
+# --------------
+RUN uv pip install --system --break-system-packages aider-chat
+
+# --------------
+# Tool: Ollama (Local LLM Server & Pre-Cached Gemma 4 Model)
+# --------------
+RUN curl -fsSL https://ollama.com/install.sh | sh && \
+    nohup ollama serve > /dev/null 2>&1 & \
+    sleep 3 && \
+    ollama pull gemma4:e2b && \
+    pkill ollama && \
+    echo '#!/bin/bash\nnohup ollama serve > /var/log/ollama.log 2>&1 &' > /etc/workstation-startup.d/200_start-ollama.sh && \
+    chmod +x /etc/workstation-startup.d/200_start-ollama.sh
+
+# --------------
+# Compilation: Rust TUI AI Welcome Dashboard
+# --------------
+COPY ./ai-dashboard /tmp/ai-dashboard
+RUN cd /tmp/ai-dashboard && \
+    cargo build --release && \
+    cp target/release/ai-dashboard /usr/local/bin/ && \
+    rm -rf /tmp/ai-dashboard
+
+# --------------
+# Script: setup-ai
+# --------------
+COPY ./scripts/setup-ai /usr/local/bin/setup-ai
+RUN chmod +x /usr/local/bin/setup-ai
 
 # --------------
 # EXTENSIONS
@@ -135,17 +170,21 @@ RUN EXTENSIONS=" \
     anthropic/claude-code \
     " && \
     for ext in $EXTENSIONS; do \
-        ext_name=$(echo $ext | cut -d'/' -f2) && \
-        ext_publisher=$(echo $ext | cut -d'/' -f1) && \
-        download_url=$(curl -s https://open-vsx.org/api/$ext | jq -r '.files.download') && \
-        if [ "$download_url" = "null" ] || [ -z "$download_url" ]; then \
-            download_url="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${ext_publisher}/vsextensions/${ext_name}/latest/vspackage"; \
-        fi && \
-        wget -qO ${ext_name}.vsix "$download_url" && \
-        unzip -q ${ext_name}.vsix "extension/*" && \
-        mv extension /opt/code-oss/extensions/${ext_name} && \
-        rm ${ext_name}.vsix; \
-    done
+        ( \
+            ext_name=$(echo $ext | cut -d'/' -f2) && \
+            ext_publisher=$(echo $ext | cut -d'/' -f1) && \
+            mkdir -p "/tmp/ext-${ext_name}" && \
+            cd "/tmp/ext-${ext_name}" && \
+            download_url=$(curl -s "https://open-vsx.org/api/${ext}" | jq -r '.files.download') && \
+            if [ "$download_url" = "null" ] || [ -z "$download_url" ]; then \
+                download_url="https://marketplace.visualstudio.com/_apis/public/gallery/publishers/${ext_publisher}/vsextensions/${ext_name}/latest/vspackage"; \
+            fi && \
+            wget -qO "${ext_name}.vsix" "$download_url" && \
+            unzip -q "${ext_name}.vsix" "extension/*" && \
+            mv extension "/opt/code-oss/extensions/${ext_name}" && \
+            rm -rf "/tmp/ext-${ext_name}" \
+        ) & \
+    done && wait
 
 # --------------
 # APT: Cleanup
