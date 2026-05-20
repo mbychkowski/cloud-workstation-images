@@ -8,7 +8,7 @@ export _IMAGE="vscider"
 ```
 
 ```bash
-gcloud builds submit --config=cloudbuild.yaml --project=${_PROJECT_ID} \
+gcloud builds submit --config=code-oss-ai/cloudbuild.yaml --project=${_PROJECT_ID} \
   --region=${_LOCATION} \
   --substitutions=_LOCATION=${_LOCATION},_IMAGE=${_IMAGE} .
 ```

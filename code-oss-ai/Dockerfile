@@ -111,8 +111,8 @@ RUN mkdir -p $NVM_DIR && \
 # --------------
 # Antigravity CLI & Python SDK
 # --------------
-RUN curl -fsSL https://antigravity.google/cli/install.sh | bash && \
-    uv pip install --system google-antigravity
+RUN AGY_INSTALL_DIR=/usr/local/bin curl -fsSL https://antigravity.google/cli/install.sh | bash && \
+    uv pip install --system --break-system-packages google-antigravity
 
 # --------------
 # EXTENSIONS
