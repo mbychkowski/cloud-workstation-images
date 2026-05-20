@@ -26,7 +26,7 @@ sudo apt-get update
 sudo apt-get install -y \
     build-essential ca-certificates gh git-lfs gnupg lsb-release \
     python3-venv software-properties-common jq ripgrep fd-find \
-    htop tree zsh neovim fzf bat tmux unzip curl wget
+    htop tree zsh neovim fzf bat tmux unzip curl wget zstd
 
 # ------------------------------------------------------------------------------
 # 2. ZSH Configuration & Plugins

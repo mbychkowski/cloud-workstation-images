@@ -26,25 +26,29 @@ RUN wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && apt-get update -o Acquire::Retries=3 && \
     apt-get upgrade -y && \
     apt install -y \
+    bat \
     build-essential \
     ca-certificates \
+    curl \
+    fd-find \
+    fzf \
     gh \
     git-lfs \
     gnupg \
+    htop \
+    jq \
     lsb-release \
+    neovim \
     python3-venv \
+    ripgrep \
     software-properties-common \
     terraform \
-    jq \
-    ripgrep \
-    fd-find \
-    htop \
+    tmux \
     tree \
+    unzip \
+    wget \
     zsh \
-    neovim \
-    fzf \
-    bat \
-    tmux
+    zstd
 
 # --------------
 # shell: zsh & Plugins
