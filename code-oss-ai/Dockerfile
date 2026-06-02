@@ -131,10 +131,23 @@ RUN uv pip install --system --break-system-packages aider-chat
 # Tool: Ollama (Local LLM Server & Pre-Cached Gemma 4 Model)
 # --------------
 RUN curl -fsSL https://ollama.com/install.sh | sh && \
-    nohup ollama serve > /dev/null 2>&1 & \
-    sleep 3 && \
+    (ollama serve > /tmp/ollama-build.log 2>&1 &) && \
+    echo "Waiting for Ollama server to start..." && \
+    count=0; \
+    while ! curl -s http://127.0.0.1:11434 >/dev/null; do \
+        count=$((count + 1)); \
+        if [ $count -ge 30 ]; then \
+            echo "Error: Ollama server failed to start within 30 seconds" >&2; \
+            echo "=== Ollama Server Logs ===" >&2; \
+            cat /tmp/ollama-build.log >&2; \
+            exit 1; \
+        fi; \
+        sleep 1; \
+    done && \
+    echo "Ollama server started successfully. Pulling model..." && \
     ollama pull gemma4:e2b && \
     pkill ollama && \
+    rm -f /tmp/ollama-build.log && \
     echo '#!/bin/bash\nnohup ollama serve > /var/log/ollama.log 2>&1 &' > /etc/workstation-startup.d/200_start-ollama.sh && \
     chmod +x /etc/workstation-startup.d/200_start-ollama.sh
 
