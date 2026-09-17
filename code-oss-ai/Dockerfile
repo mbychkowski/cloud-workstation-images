@@ -178,6 +178,7 @@ RUN EXTENSIONS=" \
     dbaeumer/vscode-eslint \
     RooVeterinaryInc/roo-cline \
     ms-playwright/playwright \
+    google/google-antigravity \
     googlecloudtools/cloudcode \
     ms-azuretools/vscode-docker \
     rust-lang/rust-analyzer \

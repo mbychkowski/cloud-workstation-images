@@ -47,5 +47,15 @@ if [ -f "/tmp/.codeoss-configs/.zshrc" ]; then
   fi
 fi
 
+# Ensure Antigravity CLI is linked into ~/.gemini/bin for the VS Code extension
+mkdir -p "$HOME_DIR/.gemini/bin"
+if [ ! -f "$HOME_DIR/.gemini/bin/agy" ] && [ -x "/usr/local/bin/agy" ]; then
+  ln -sf /usr/local/bin/agy "$HOME_DIR/.gemini/bin/agy"
+  echo "Linked Antigravity CLI to $HOME_DIR/.gemini/bin/agy."
+fi
+chown -R user:user "$HOME_DIR/.gemini"
+chmod -R 755 "$HOME_DIR/.gemini"
+
 rm -rf /tmp/.codeoss-configs
+
 
